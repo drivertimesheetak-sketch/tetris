@@ -52,14 +52,15 @@
     position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:1;
     display:flex;flex-direction:column;align-items:center;
     width:100%;max-width:420px;height:100%;height:100dvh;
-    padding:max(env(safe-area-inset-top,0px),40px) 8px env(safe-area-inset-bottom,8px);
+    padding:max(env(safe-area-inset-top,0px),8px) 8px env(safe-area-inset-bottom,8px);
     overflow:hidden;
   }
 
   /* --- Header info --- */
   #header{
     display:flex;align-items:center;justify-content:space-between;
-    width:100%;padding:2px 0 4px;flex-shrink:0;
+    width:100%;padding:2px 0 2px;flex-shrink:0;
+    flex-wrap:wrap;gap:2px;
   }
   #header h1{
     font-size:1.2rem;font-weight:800;letter-spacing:.15em;
@@ -108,9 +109,10 @@
   /* --- Main area: canvas + next --- */
   #main-area{
     display:flex;align-items:flex-start;gap:6px;
-    width:100%;flex:1 1 auto;min-height:0;
+    width:100%;flex:0 1 auto;min-height:0;
     justify-content:center;
     padding:2px 0;
+    overflow:hidden;
   }
 
   #game-canvas{
@@ -141,16 +143,17 @@
   #controller{
     width:100%;
     flex-shrink:0;
-    padding:6px 4px 12px;
+    padding:4px 4px 8px;
     display:flex;
     align-items:center;
     justify-content:space-between;
+    margin-top:auto;
   }
 
   /* --- 十字キー (D-Pad) --- */
   .dpad-container{
     position:relative;
-    width:130px;height:130px;
+    width:120px;height:120px;
     flex-shrink:0;
   }
 
@@ -189,28 +192,28 @@
 
   /* 上 */
   .dpad-up{
-    width:44px;height:44px;
+    width:40px;height:40px;
     top:0;left:50%;
     transform:translateX(-50%);
     border-radius:10px 10px 0 0;
   }
   /* 下 */
   .dpad-down{
-    width:44px;height:44px;
+    width:40px;height:40px;
     bottom:0;left:50%;
     transform:translateX(-50%);
     border-radius:0 0 10px 10px;
   }
   /* 左 */
   .dpad-left{
-    width:44px;height:44px;
+    width:40px;height:40px;
     top:50%;left:0;
     transform:translateY(-50%);
     border-radius:10px 0 0 10px;
   }
   /* 右 */
   .dpad-right{
-    width:44px;height:44px;
+    width:40px;height:40px;
     top:50%;right:0;
     transform:translateY(-50%);
     border-radius:0 10px 10px 0;
@@ -241,20 +244,20 @@
   /* --- A/B ボタン --- */
   .ab-container{
     position:relative;
-    width:130px;height:110px;
+    width:120px;height:100px;
     flex-shrink:0;
   }
 
   .ab-btn{
     position:absolute;
-    width:58px;height:58px;
+    width:54px;height:54px;
     border-radius:50%;
     display:flex;flex-direction:column;align-items:center;justify-content:center;
     cursor:pointer;
     -webkit-tap-highlight-color:transparent;
     transition:transform .06s,box-shadow .12s;
     border:2.5px solid;
-    font-weight:800;font-size:1.1rem;
+    font-weight:800;font-size:1rem;
     letter-spacing:.05em;
   }
   .ab-btn:active{
@@ -439,14 +442,12 @@
       <div class="info-box"><span class="label">Lines</span><span class="value" id="lines-val">0</span></div>
     </div>
     <div class="info-box"><span class="label">Score</span><span class="value" id="score-val">0</span></div>
-    <div style="display:flex; gap:6px;">
+    <div style="display:flex; gap:4px;">
       <button id="btn-pause" class="action-btn" aria-label="ポーズ">
         <svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-        PAUSE
       </button>
       <button id="btn-reset" class="action-btn" aria-label="リセット">
         <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.96 7.96 0 0012 4C7.58 4 4.01 7.58 4.01 12S7.58 20 12 20c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
-        RESET
       </button>
     </div>
   </div>
@@ -464,8 +465,8 @@
     <!-- 十字キー -->
     <div class="dpad-container">
       <div class="dpad-center"></div>
-      <button class="dpad-btn dpad-up" id="btn-up" aria-label="ハードドロップ">
-        <svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>
+      <button class="dpad-btn dpad-up" id="btn-up" aria-label="回転">
+        <svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
       </button>
       <button class="dpad-btn dpad-down" id="btn-down" aria-label="ソフトドロップ">
         <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
@@ -659,15 +660,16 @@ function resize(){
   const header=document.getElementById('header');
   const controller=document.getElementById('controller');
   const hh=header.offsetHeight;
-  const ch=controller.offsetHeight+16;
-  const availH=wrapper.offsetHeight-hh-ch-16;
+  const ch=controller.offsetHeight;
+  // ヘッダー、コントローラー、マージン分を除いた利用可能高さ
+  const availH=wrapper.offsetHeight-hh-ch-24;
   const availW=wrapper.offsetWidth-90; // side panel ~80px
   const bsH=Math.floor(availH/ROWS);
   const bsW=Math.floor(availW/COLS);
-  BS=Math.max(12,Math.min(bsH,bsW,28));
+  BS=Math.max(10,Math.min(bsH,bsW,26));
   canvas.width=COLS*BS;canvas.height=ROWS*BS;
   canvas.style.width=canvas.width+'px';canvas.style.height=canvas.height+'px';
-  const sideBS=Math.max(10,Math.floor(BS*.6));
+  const sideBS=Math.max(10,Math.floor(BS*.55));
   nextCanvas.width=4*sideBS;nextCanvas.height=4*sideBS;
   nextCanvas.style.width=nextCanvas.width+'px';nextCanvas.style.height=nextCanvas.height+'px';
   holdCanvas.width=4*sideBS;holdCanvas.height=4*sideBS;
@@ -901,25 +903,31 @@ function hideOverlay(){document.getElementById('overlay').classList.add('hidden'
 
 /* ===== Game Loop ===== */
 let lastTime=0;
+let locked=false; // lockPiece二重呼び出し防止フラグ
 function loop(time){
   if(gameOver){draw();return}
   const dt=time-lastTime;lastTime=time;
   if(paused){requestAnimationFrame(loop);return}
 
+  locked=false;
   dropTimer+=dt;
   if(dropTimer>=dropInterval){
     if(!moveDown()){
-      lockTimer+=dropInterval;
-      if(lockTimer>=lockDelay)lockPiece();
+      // 接地中: lockTimerはdt区間のチェックに任せる
     }else{lockTimer=0}
     dropTimer=0;
   }
 
-  // Check lock on ground
-  if(current&&collides(current.shape,current.x,current.y+1)){
+  // Check lock on ground (接地判定を一か所に統合)
+  if(!locked && current&&collides(current.shape,current.x,current.y+1)){
     lockTimer+=dt;
-    if(lockTimer>=lockDelay)lockPiece();
-  }else{lockTimer=0}
+    if(lockTimer>=lockDelay){
+      lockPiece();
+      locked=true;
+    }
+  }else if(!locked){
+    lockTimer=0;
+  }
 
   draw();
   if(!gameOver)requestAnimationFrame(loop);
@@ -952,7 +960,7 @@ function addSingleBtn(id,fn){
 addSingleBtn('btn-rotate',()=>rotate());
 addSingleBtn('btn-drop',()=>hardDrop());
 addSingleBtn('btn-hold',()=>holdSwap());
-addSingleBtn('btn-up',()=>hardDrop());
+addSingleBtn('btn-up',()=>rotate());
 
 /* ===== Controls — Keyboard ===== */
 document.addEventListener('keydown',(e)=>{
